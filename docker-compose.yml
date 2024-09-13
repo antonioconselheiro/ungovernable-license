@@ -1,0 +1,23 @@
+secrets:
+  ungovernable:
+    file: ./hs_ed25519_secret_key
+
+services:
+  tor:
+    image: goldy/tor-hidden-service
+    links:
+      - ungovernable
+    environment:
+      UNGOVERNABLE_TOR_SERVICE_HOSTS: '80:ungovernable:80'
+      UNGOVERNABLE_TOR_SERVICE_VERSION: '3'
+
+    secrets:
+      - source: ungovernable
+        target: ungovernable
+        mode: 400
+
+  ungovernable:
+    image: nginx
+    volumes:
+      - ./html:/usr/share/nginx/html
+    restart: always
