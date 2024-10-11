@@ -1,19 +1,34 @@
 secrets:
-  ungovernable:
-    file: ./hs_ed25519_secret_key
+  ungovernable1:
+    file: ./hs_ed25519_secret_key_1
+  ungovernable2:
+    file: ./hs_ed25519_secret_key_2
 
 services:
-  tor:
+  tor1:
     image: goldy/tor-hidden-service
     links:
       - ungovernable
     environment:
-      UNGOVERNABLE_TOR_SERVICE_HOSTS: '80:ungovernable:80'
-      UNGOVERNABLE_TOR_SERVICE_VERSION: '3'
+      UNGOVERNABLE1_TOR_SERVICE_HOSTS: '80:ungovernable:80'
+      UNGOVERNABLE1_TOR_SERVICE_VERSION: '3'
 
     secrets:
-      - source: ungovernable
-        target: ungovernable
+      - source: ungovernable1
+        target: ungovernable1
+        mode: 400
+
+  tor2:
+    image: goldy/tor-hidden-service
+    links:
+      - ungovernable
+    environment:
+      UNGOVERNABLE2_TOR_SERVICE_HOSTS: '80:ungovernable:80'
+      UNGOVERNABLE2_TOR_SERVICE_VERSION: '3'
+
+    secrets:
+      - source: ungovernable2
+        target: ungovernable2
         mode: 400
 
   ungovernable:
